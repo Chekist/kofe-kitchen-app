@@ -12,8 +12,7 @@ object TelegramMessageFormatter {
         "Повар: $cookName.",
         "Состояние кухни: $status.",
         "Неустранённые замечания: ${unresolved.ifBlank { "Нет" }}."
-    ).joinToString("
-")
+    ).joinToString("\n")
 
     fun formatKitchenClosing(
         dateTime: String,
@@ -39,8 +38,7 @@ object TelegramMessageFormatter {
         "Администратор: проверил ______ дата/время ______.",
         "Замечание ______ Исполнитель ______ Срок ______.",
         "Устранено ______ Повторное фото/проверка ______."
-    ).joinToString("
-")
+    ).joinToString("\n")
 
     fun formatWriteOff(
         dateTime: String,
@@ -57,8 +55,7 @@ object TelegramMessageFormatter {
         "Повар: $cookName.",
         "Фото весов и маркировки приложены.",
         "В учёт внесено: ${if (inAccounting) "Да" else "Нет"}."
-    ).joinToString("
-")
+    ).joinToString("\n")
 
     fun formatLabeling(
         product: String,
@@ -76,8 +73,7 @@ object TelegramMessageFormatter {
         "Хранить при: $storageConditions.",
         "Партия/упаковка: $batchInfo.",
         "Сотрудник: $cookName."
-    ).joinToString("
-")
+    ).joinToString("\n")
 
     fun formatTemperature(
         dateTime: String,
@@ -93,8 +89,7 @@ object TelegramMessageFormatter {
         "Морозильник: $freezerTemp°C.",
         "Отклонения: ${if (hasDeviations) "Есть" else "Нет"}.",
         "Меры: ${measures.ifBlank { "Не требуются" }}."
-    ).joinToString("
-")
+    ).joinToString("\n")
 
     fun formatShortageOrDefect(
         type: String,
@@ -106,26 +101,22 @@ object TelegramMessageFormatter {
         "Остаток / описание: $remaining.",
         "Срочность: $urgency.",
         "Фото приложено."
-    ).joinToString("
-")
+    ).joinToString("\n")
 
     fun formatNewRemark(text: String, assignee: String, deadline: String): String = listOf(
         "НОВОЕ ЗАМЕЧАНИЕ: $text.",
         "Исполнитель: $assignee.",
         "Срок: $deadline."
-    ).joinToString("
-")
+    ).joinToString("\n")
 
     fun formatRemarkResolved(text: String, cookName: String): String = listOf(
         "ЗАМЕЧАНИЕ УСТРАНЕНО: $text.",
         "Исполнитель: $cookName.",
         "Фото-подтверждение приложено."
-    ).joinToString("
-")
+    ).joinToString("\n")
 
     fun formatGeneralCleaning(date: String, assignee: String): String = listOf(
         "ГЕНЕРАЛЬНАЯ УБОРКА назначена на $date.",
         "Ответственный: $assignee."
-    ).joinToString("
-")
+    ).joinToString("\n")
 }

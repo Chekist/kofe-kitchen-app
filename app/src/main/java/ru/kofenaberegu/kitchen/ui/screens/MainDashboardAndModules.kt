@@ -328,8 +328,7 @@ fun KitchenClosingWizardScreen(viewModel: KitchenViewModel, openCamera: (String,
                 Button(
                     onClick = {
                         val hasIssues = checklist.any { it.mark == CheckMark.ISSUE }
-                        val summary = checklist.joinToString("
-") {
+                        val summary = checklist.joinToString("\n") {
                             "${it.id}. [${it.mark?.symbol}] ${it.title}${if (it.comment.isNotBlank()) " — ${it.comment}" else ""}"
                         }
                         previewText = TelegramMessageFormatter.formatKitchenClosing(
