@@ -41,30 +41,36 @@ fun ReportPreviewSheet(
         onDismissRequest = onDismiss,
         title = { Text("Предпросмотр отчёта", fontWeight = FontWeight.Bold) },
         text = {
-            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 520.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text("Проверьте и при необходимости отредактируйте сообщение перед отправкой.", style = MaterialTheme.typography.bodySmall)
                 OutlinedTextField(
                     value = editableText,
                     onValueChange = { editableText = it },
-                    label = { Text("Текст сообщения (можно отредактировать)") },
-                    modifier = Modifier.fillMaxWidth().heightIn(min = 160.dp)
+                    label = { Text("Текст сообщения") },
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 150.dp),
+                    minLines = 5
                 )
-                Spacer(Modifier.height(12.dp))
                 OutlinedButton(
                     onClick = { onRequestCamera(photoPromptTitle, photoPromptHint) },
-                    modifier = Modifier.fillMaxWidth().height(50.dp)
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)
                 ) {
                     Icon(Icons.Default.CameraAlt, contentDescription = null)
                     Spacer(Modifier.width(8.dp))
-                    Text("Снять фото через камеру (${photoPaths.size})")
+                    Text("Снять фото камерой (${photoPaths.size})")
                 }
                 if (photoPaths.isNotEmpty()) {
-                    Spacer(Modifier.height(8.dp))
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         items(photoPaths) { path ->
                             AsyncImage(
                                 model = File(path),
-                                contentDescription = null,
-                                modifier = Modifier.size(72.dp)
+                                contentDescription = "Фото отчёта",
+                                modifier = Modifier.size(76.dp)
                             )
                         }
                     }
@@ -75,7 +81,8 @@ fun ReportPreviewSheet(
             Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
                 Button(
                     onClick = { onSendTelegram(editableText) },
-                    modifier = Modifier.fillMaxWidth().height(50.dp)
+                    enabled = editableText.isNotBlank(),
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 50.dp)
                 ) {
                     Icon(Icons.Default.Send, contentDescription = null)
                     Spacer(Modifier.width(8.dp))
@@ -83,27 +90,34 @@ fun ReportPreviewSheet(
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
                     OutlinedButton(
-                        onClick = {
-                            val cb = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                            cb.setPrimaryClip(ClipData.newPlainText("Kitchen Report", editableText))
-                            Toast.makeText(context, "Текст скопирован", Toast.LENGTH_SHORT).show()
-                        },
-                        modifier = Modifier.weight(1f).height(48.dp)
+                        onClick = { copyReportText(context, editableText) },
+                        enabled = editableText.isNotBlank(),
+                        modifier = Modifier.weight(1f).heightIn(min = 48.dp)
                     ) {
                         Icon(Icons.Default.ContentCopy, contentDescription = null)
-                        Spacer(Modifier.width(4.dp))
+                        Spacer(Modifier.width(6.dp))
                         Text("Скопировать")
                     }
                     OutlinedButton(
                         onClick = { onSaveOffline(editableText) },
-                        modifier = Modifier.weight(1f).height(48.dp)
+                        enabled = editableText.isNotBlank(),
+                        modifier = Modifier.weight(1f).heightIn(min = 48.dp)
                     ) {
                         Icon(Icons.Default.Save, contentDescription = null)
-                        Spacer(Modifier.width(4.dp))
-                        Text("Офлайн")
+                        Spacer(Modifier.width(6.dp))
+                        Text("Сохранить")
                     }
                 }
             }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("Закрыть") }
         }
     )
+}
+
+internal fun copyReportText(context: Context, text: String) {
+    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    clipboard.setPrimaryClip(ClipData.newPlainText("Отчёт кухни", text))
+    Toast.makeText(context, "Сообщение скопировано", Toast.LENGTH_SHORT).show()
 }
